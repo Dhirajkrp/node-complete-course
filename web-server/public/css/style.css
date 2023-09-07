@@ -1,0 +1,8 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: azure;
+  font-family: "Courier New", Courier, monospace;
+}
