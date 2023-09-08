@@ -42,6 +42,9 @@ app.use("/", require("./routes/root"));
 //providing the route for subdir
 app.use("/subdir", require("./routes/subdir"));
 
+//router for the employee api
+app.use("/employee", require("./routes/api/employees"));
+
 app.all("/*", (req, res) => {
   res.status(404);
   if (req.accepts("html")) {
