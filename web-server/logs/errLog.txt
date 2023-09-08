@@ -2,3 +2,4 @@
 2023-35-07	05:35:27	08d863a6-ea67-42f4-8c32-d94c4592f487	Error	Not allowed by CORS
 2023-07-07	07:07:37	6e79505d-435a-441c-b62f-1ed231bef4f3	TypeError	res.accepts is not a function
 2023-13-07	07:13:12	8bc934ed-0aea-440d-8ed2-b6f96c6da48f	ReferenceError	path is not defined
+2023-59-08	08:59:08	ee35cea5-499d-436a-b3aa-3aade54e38f0	TypeError	Cannot read properties of undefined (reading 'json')

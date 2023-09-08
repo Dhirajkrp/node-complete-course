@@ -1,0 +1,4 @@
+node_modules
+gitignore
+web-server/logs/errLog.txt
+web-server/logs/reqLog.txt
