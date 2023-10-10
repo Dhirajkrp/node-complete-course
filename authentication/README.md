@@ -68,5 +68,30 @@ bcrypt.compare(plainPassword, hash, (err, result) => {
 There are more than one syntax of using the bcrypt methods or any other asynchronous code in js ,feel free to use any of the syntax you like.
 
 ```javascript
+const bcrypt = require("bcrypt");
+const password = "password123";
 
+//syntax 1
+const hashPwd = async (pwd) => {
+  const hashed = await bcrypt.hash(pwd, 10);
+  return hashed;
+};
+hashPwd(password)
+  .then((hashed) => console.log(hashed))
+  .catch((err) => console.log(err));
+
+// syntax 2
+bcrypt
+  .hash(password, 10)
+  .then((hash) => console.log(hash))
+  .catch((err) => console.log(err));
+
+//syntax 3
+bcrypt.hash(password, 10, (err, hashed) => {
+  if (err) {
+    console.log(err);
+  } else {
+    console.log(`The hashed password is: ${hashed}`);
+  }
+});
 ```
