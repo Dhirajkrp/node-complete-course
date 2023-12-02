@@ -76,3 +76,44 @@
 //     );
 //   }
 // );
+
+//*******  using the Synchronous API  to perform file operations operation.*************/
+
+// const fs = require("node:fs");
+
+// try {
+//   console.time("read sycn");
+//   const data = fs.readFileSync("./files/starter1.txt", "utf-8");
+//   console.timeEnd("read sycn");
+// } catch (err) {
+//   console.log("something went wrong");
+// }
+// console.log("the program is still running");
+
+// console.time("write sycn");
+// for (let i = 1; i < 100000; i++) {
+//   fs.appendFileSync("./files/starter.txt", ` ${i} `);
+// }
+// console.timeEnd("write sycn");
+
+/**************************************************************************/
+
+//using the callback api for performing the file operations.
+
+// const fs = require("fs");
+
+// fs.readFile("./files/starter.txt", "utf8", (err, data) => {
+//   if (err) {
+//     throw err;
+//   }
+//   console.log(data);
+// });
+
+/********************************************** */
+//using the PROMISES API
+
+(async () => {
+  const fs = require("node:fs/promises");
+  const data = await fs.readFile("./files/starter.txt", "utf-8");
+  console.log(data);
+})();

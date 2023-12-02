@@ -1,11 +1,33 @@
 we use the 'fs' module to perform file operations such as reading, wrting creating deleting and updating files .
 
-there are two modes of performing these operations
+The file handling concept is not available in the core js language as it is a high end language it has no means of communicating with the operating system,
 
-1. synchronous
-2. Asynchronous
+Then comes the v8 engine which enables us to exucute the javascript code , but even that does not provide any means of communicating with the os, it is just an execution engine.
 
-when we use functions like readFileSync() , it will block the execution of the program until the operation is completed , whereas when we use readFile() this will be an asynchronous function which will take a callback function which will be executed when the async operation is completed.
+In order to perform file operations and communicate with the os , node uses a c librabry which is known as **libuv** , this is another crucial part of the nodejs ecosystem along with the v8 engine and the event loop architecture.
+
+To perform any file operation , node js uses the native methods provided by the libuv library , the fuction internally goes first to the library, finds its c implementation and then that function deals with the system calls to interact with the os, when the os responses back, the data is passed to the actual function call thruogh this library.
+
+There are three ways of doing file operations in nodejs.
+
+1. Using the Promises API.
+2. Using the Callback API.
+3. Using the Synchronous API.
+
+For most of the cases it is advised to use the Promises API to perform the file handling , and only use the callback API when tike effeciency is very crucial as the callback API is faster than the Promises API but there are some trade offs for the memory usage . So generally it is good to stick with the Promises API.
+
+### Using the Synchronous API
+
+```js
+const fs = require("node:fs");
+const data = fs.readFileSync("./files/starter.txt", "utf-8");
+console.log(data);
+```
+
+Notice that the sync api does not provides any proper means to handle any errors in the code, if we encounter an error the entire process will be terninated with an uncaught error.
+We need to use try catch block to handle the errors in our code manually.
+
+### Using the Callback API
 
 ```js
 const fs = require("fs");
@@ -18,14 +40,14 @@ fs.readFile("./files/starter.txt", "utf8", (err, data) => {
 });
 ```
 
-above is the async version , we can do the same in synchronous way
+This api is asynchronous and registers a callback function and waits for the result.the first paramaeter is the error and the second parameter is the data .
+
+### Using the Primises API
 
 ```js
-const fs = require("fs");
+const fs = require("node:fs/promises");
 
-const data = fs.readFileSync("./files/starter.txt", "utf8");
-
-console.log(data);
+fs.readFile("");
 ```
 
 however wheh using sync there is no proper way of handling the errors.
