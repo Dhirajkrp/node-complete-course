@@ -42,7 +42,7 @@ fs.readFile("./files/starter.txt", "utf8", (err, data) => {
 
 This api is asynchronous and registers a callback function and waits for the result.the first paramaeter is the error and the second parameter is the data .
 
-### Using the Primises API
+### Using the Promises API
 
 ```js
 const fs = require("node:fs/promises");
@@ -51,6 +51,127 @@ fs.readFile("");
 ```
 
 however wheh using sync there is no proper way of handling the errors.
+
+## Watcher:
+
+This enables us to watch over a file or directory for any chnages.
+
+```js
+const fs = require("node:fs/promises");
+const watcher = fs.watch("./content.txt");
+```
+
+the above code creater an AsyncIterator object which can be iterated using to for-of loop.
+
+```js
+for await (const event of watcher) {
+  console.log(event);
+}
+```
+
+by using this for-of loop we can access all the events happening in the files for example, any updates, deletion, renaming of the file etc, the event object has two properties, namely eventType and fileName .
+
+### Reading from the file.
+
+Once we have setup a watcher which watches for any changes in our file , lets now read the content of the file everytime there is a change in it.
+
+To perform any operation on a file there are two steps,
+
+1. open the file:
+   for this we use the fs.open() function , this returns an object of the FileHandler class with a file descriptor. The file descriptor is a unique number which is assigned to all the open files to identify them.
+   and using this object we can perform all the operations on the file.
+
+```js
+const fileHandler = await fs.open("./commands.txt", "r");
+```
+
+this function takes two arguments ,
+
+1. the path of the file to be opened.
+2. the mode in which the file is to be opened, here we give th 'r' mode which stands for read , so that we can read the content of the file.
+
+The fileHandler has access to many functions one of which is the read() function , it takes 4 main arguments:
+
+- buffer
+- offset
+- length
+- position
+
+The buffer specifies a variable where we want to store the content of the file.
+
+The position defines the starting point where the read operation will begin from, for exmple the starting position to read can be from line 7 of a file.
+
+The offset defines how many bites do we need to skip from the current position before we start reading, for exmaple we can specify that start reading from the thrid word of line 7 , or in other words skip 2 words before start reading.
+
+The length specifies how much content do we need to read from the file, the file can be large and ther might be a case that we want to only reading a specific portion of the file. for example read the next two lines starting from line 7 word 3.
+
+The values of the above 3 are in bytes, and for the buffer , we can use the Buffer.alloc(<size in bytes>) to create the buffer.
+
+If we do not specify any of these params ,for example if we write just,
+
+```js
+const content = await fileHandler.read();
+```
+
+A buffer will automatically be alloted , and this can or usually always is more that what we need, causing a memory wastage (we should only use buffer which can hold the content of the file , not more and not less).
+
+The offest will be set to 0, i.e it will start reading from the starting of the file.
+
+The length will be by default set to the length of the file, i.e it will the whole file.
+
+Once the file reading is completed , the position will move to the end of the file, thus if we try to read the file again, we will get an empty buffer.
+
+So, the problem now is to first find out the size of the file and allocate a buffer for it so that we dont waste any memory.
+
+To do this we use the function fileHandler.stat() the stat function gives the status or the metadata of the file, similar to what you get when you go the file and click on properties in your file explorer.
+
+```js
+
+const stat = await fileHandler.stat();
+//the content of the object stat will be:
+stats =  {
+  dev: 3028541696,
+  mode: 33206,
+  nlink: 1,
+  uid: 0,
+  gid: 0,
+  rdev: 0,
+  blksize: 4096,
+  ino: 1970324836981978,
+  size: 45, // gives the size in bytes
+  blocks: 0,
+  atimeMs: 1701689828827.9583,
+  mtimeMs: 1701689828827.9583, // last modified
+  ctimeMs: 1701689828827.9583,
+  birthtimeMs: 1701525559630.0598,
+  atime: 2023-12-04T11:37:08.828Z,
+  mtime: 2023-12-04T11:37:08.828Z,
+  ctime: 2023-12-04T11:37:08.828Z,
+  birthtime: 2023-12-02T13:59:19.630Z
+}
+
+
+```
+
+using this object we can get the size of the file in bytes.
+
+```js
+const size = (await fileHandler.stat()).size;
+```
+
+Using this , we can get the required 4 arguments,
+
+```js
+const size = (await fileHandler.stat()).size;
+const buffer = Buffer.alloc(size);
+const offset = 0;
+const length = buffer.byteLength;
+const position = 0;
+
+const content = await fileHandler.read(buffer, offset, length, position);
+console.log("Content of the file is:");
+console.log(content.buffer.toString("utf-8"));
+```
 
 ### using path module
 
