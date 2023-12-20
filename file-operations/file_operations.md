@@ -162,15 +162,20 @@ const size = (await fileHandler.stat()).size;
 Using this , we can get the required 4 arguments,
 
 ```js
-const size = (await fileHandler.stat()).size;
-const buffer = Buffer.alloc(size);
-const offset = 0;
-const length = buffer.byteLength;
-const position = 0;
+const fs = require("node:fs/promises");
 
-const content = await fileHandler.read(buffer, offset, length, position);
-console.log("Content of the file is:");
-console.log(content.buffer.toString("utf-8"));
+(async () => {
+  const fileHandler = await fs.open("./commands.txt");
+  const size = (await fileHandler.stat()).size;
+  const buffer = Buffer.alloc(size);
+  const offset = 0;
+  const length = buffer.byteLength;
+  const position = 0;
+
+  const content = await fileHandler.read(buffer, offset, length, position);
+  console.log("Content of the file is:");
+  console.log(content.buffer.toString("utf-8"));
+})();
 ```
 
 ### using path module
